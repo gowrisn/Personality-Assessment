@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mind Match</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    .hidden-page { display: none; }
+    .option-btn {
+      display: inline-block;
+      margin: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: 2px solid #d1d5db;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .option-btn input { display: none; }
+    .option-btn span { font-weight: 500; }
+    .option-btn input:checked + span {
+      background-color: #facc15;
+      color: black;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- ========== LOGIN PAGE ========== -->
+  <div id="loginPage" class="min-h-screen flex">
+    <div class="hidden md:flex w-1/2 bg-purple-600 text-white flex-col justify-center items-center px-10">
+      <h1 class="text-4xl font-bold mb-4">Discover Your True Self</h1>
+      <p class="text-lg text-center">Unlock insights into your personality and potential.<br>Take our free MBTI test today!</p>
+    </div>
+    <div class="flex w-full md:w-1/2 justify-center items-center bg-white px-6">
+      <div class="w-full max-w-sm bg-purple-100 p-8 rounded-2xl shadow-md">
+        <h2 class="text-2xl font-bold text-center text-purple-700 mb-6">Welcome to MBTI</h2>
+        <form id="loginForm" class="space-y-4">
+          <input type="text" placeholder="Name" required class="w-full px-4 py-3 rounded-lg border">
+          <input type="email" placeholder="Email" required class="w-full px-4 py-3 rounded-lg border">
+          <input type="password" placeholder="Password" required class="w-full px-4 py-3 rounded-lg border">
+          <button type="submit" class="w-full bg-yellow-400 text-black font-semibold py-3 rounded-lg hover:bg-yellow-500 transition">Log In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== HOME PAGE (AFTER LOGIN) ========== -->
+  <div id="homePage" class="hidden-page px-6 py-16 max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold text-purple-700 mb-4 text-center">Welcome to Mind Match</h1>
+    <p class="text-lg leading-relaxed text-gray-700 text-center mb-10">
+      We help you discover your unique personality using the Myers-Briggs Type Indicator (MBTI). 
+      By understanding your preferences, you’ll gain insights into your natural strengths and career options. 
+      Get ready to unlock your potential and build a future that truly fits you!
+    </p>
+
+    <h2 class="text-2xl font-bold text-center mb-8">8 MBTI Preferences</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="flex items-start space-x-4">
+        <span class="text-3xl">📚</span>
+        <div>
+          <h3 class="font-bold">Extraversion (E)</h3>
+          <p>Focus on the outer world of people and activity</p>
+        </div>
+      </div>
+
+      <div class="flex items-start space-x-4">
+        <span class="text-3xl">🔍</span>
+        <div>
+          <h3 class="font-bold">Introversion (I)</h3>
+          <p>Focus on the inner world of ideas and reflection</p>
+        </div>
+      </div>
+
+      <div class="flex items-start space-x-4">
+        <span class="text-3xl">👀</span>
+        <div>
+          <h3 class="font-bold">Sensing (S)</h3>
+          <p>Focus on facts, details, and present realities</p>
+        </div>
+      </div>
+
+      <div class="flex items-start space-x-4">
+        <span class="text-3xl">💡</span>
+        <div>
+          <h3 class="font-bold">Intuition (N)</h3>
+          <p>Focus on patterns, meanings, and future possibilities</p>
+        </div>
+      </div>
+
+      <div class="flex items-start space-x-4">
+        <span class="text-3xl">⚖️</span>
+        <div>
+          <h3 class="font-bold">Thinking (T)</h3>
+          <p>Make decisions based on logic and objective analysis</p>
+        </div>
+      </div>
+
+      <div class="flex items-start space-x-4">
+        <span class="text-3xl">❤️</span>
+        <div>
+          <h3 class="font-bold">Feeling (F)</h3>
+          <p>Make decisions based on values and personal impact</p>
+        </div>
+      </div>
+
+      <div class="flex items-start space-x-4">
+        <span class="text-3xl">📅</span>
+        <div>
+          <h3 class="font-bold">Judging (J)</h3>
+          <p>Prefer structure, plans, and organized approaches</p>
+        </div>
+      </div>
+
+      <div class="flex items-start space-x-4">
+        <span class="text-3xl">⏳</span>
+        <div>
+          <h3 class="font-bold">Perceiving (P)</h3>
+          <p>Prefer flexibility, spontaneity, and adaptability</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-12">
+      <button id="startBtn" class="px-6 py-3 bg-yellow-400 text-black rounded-lg text-lg font-semibold hover:bg-yellow-500">Let’s Start</button>
+    </div>
+  </div>
+
+  <!-- ========== QUESTIONNAIRE PAGE ========== -->
+  <div id="questionnairePage" class="hidden-page max-w-2xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-bold text-center text-purple-700 mb-6">Personality Questionnaire</h2>
+
+    <!-- Progress Bar -->
+    <div class="w-full bg-gray-200 rounded-full h-3 mb-6">
+      <div id="progressBar" class="bg-purple-600 h-3 rounded-full" style="width: 0%;"></div>
+    </div>
+
+    <!-- Question Box -->
+    <div id="questionBox" class="bg-white shadow-md rounded-xl p-6 text-center">
+      <p id="questionText" class="text-lg font-medium mb-6">Loading question...</p>
+      <div id="options" class="flex flex-wrap justify-center gap-2">
+        <!-- Options here -->
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex justify-between mt-6">
+      <button id="prevBtn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg" disabled>Back</button>
+      <button id="nextBtn" class="px-4 py-2 bg-purple-600 text-white rounded-lg">Next</button>
+    </div>
+  </div>
+
+  <!-- ========== RESULTS DASHBOARD ========== -->
+  <div id="resultPage" class="hidden-page text-center px-6 py-16"></div>
+
+  <!-- ========== SCRIPT ========== -->
+  <script>
+    // Elements
+    const loginForm = document.getElementById("loginForm");
+    const loginPage = document.getElementById("loginPage");
+    const homePage = document.getElementById("homePage");
+    const startBtn = document.getElementById("startBtn");
+    const questionnairePage = document.getElementById("questionnairePage");
+    const resultPage = document.getElementById("resultPage");
+    const questionText = document.getElementById("questionText");
+    const optionsDiv = document.getElementById("options");
+    const progressBar = document.getElementById("progressBar");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    // student name captured from login form's first input
+    let studentName = "";
+
+    const scaleLabels = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
+
+    // MBTI mapping (from your table)
+    const mbtiData = {
+      ISTJ:{tagline:"The Planner", traits:"Practical, disciplined, detail-focused", stream:"Science", courses:"B.Tech, MBBS, B.Sc", careers:"Engineer, Doctor, Data Analyst", alternatives:"Commerce", insights:"ISTJs prefer structured, rule-based environments where precision is valued."},
+      ISFJ:{tagline:"The Nurturer", traits:"Responsible, caring, loyal", stream:"Science / Humanities", courses:"Nursing, BA Social Work, B.Ed", careers:"Teacher, Social Worker, Nurse", alternatives:"Commerce", insights:"Strong sense of duty and people-care makes ISFJs excel in supportive roles."},
+      INFJ:{tagline:"The Guide", traits:"Visionary, empathetic, values-driven", stream:"Humanities", courses:"BA Psychology, Sociology, Literature", careers:"Psychologist, Counsellor, Writer", alternatives:"Commerce", insights:"INFJs thrive when aligning personal values with meaningful careers."},
+      INTJ:{tagline:"The Strategist", traits:"Independent, analytical, future-oriented", stream:"Science", courses:"B.Tech, B.Sc Data Science, MBA", careers:"Scientist, Consultant, Tech Leader", alternatives:"Commerce", insights:"INTJs excel in logic-heavy, strategy-based fields with innovation."},
+      ISTP:{tagline:"The Problem-Solver", traits:"Practical, hands-on, adaptable", stream:"Science", courses:"Diploma Engg, B.Sc IT, Aviation", careers:"Pilot, Mechanic, IT Specialist", alternatives:"Commerce", insights:"ISTPs thrive in real-world, technical problem solving."},
+      ISFP:{tagline:"The Artist", traits:"Sensitive, flexible, creative", stream:"Humanities", courses:"Fine Arts, Design, BA Literature", careers:"Designer, Musician, Graphic Artist", alternatives:"Commerce", insights:"ISFPs value personal expression and prefer creative freedom."},
+      INFP:{tagline:"The Idealist", traits:"Imaginative, values-driven, empathetic", stream:"Humanities", courses:"BA Psychology, Journalism, English Lit", careers:"Writer, Counsellor, NGO Worker", alternatives:"Commerce", insights:"INFPs want careers aligned with meaning, creativity, and helping others."},
+      INTP:{tagline:"The Thinker", traits:"Logical, curious, loves theories", stream:"Science", courses:"B.Sc Physics, Computer Science, Engineering", careers:"Researcher, Programmer, Scientist", alternatives:"Commerce", insights:"INTPs thrive in problem-solving, knowledge-driven fields."},
+      ESTP:{tagline:"The Dynamo", traits:"Action-oriented, energetic, persuasive", stream:"Commerce / Science", courses:"BBA, Sports Mgmt, Hotel Mgmt", careers:"Entrepreneur, Athlete, Sales Head", alternatives:"Humanities", insights:"ESTPs excel in fast-paced, practical roles where decisions matter."},
+      ESFP:{tagline:"The Performer", traits:"Outgoing, fun-loving, adaptable", stream:"Humanities / Commerce", courses:"Performing Arts, Media Studies, BBA", careers:"Actor, Anchor, Event Manager", alternatives:"Science", insights:"ESFPs bring energy and people-skills to creative and social industries."},
+      ENFP:{tagline:"The Visionary", traits:"Enthusiastic, curious, people-oriented", stream:"Humanities", courses:"BA Psychology, Journalism, Mass Comm", careers:"Psychologist, Journalist, Entrepreneur", alternatives:"Commerce", insights:"ENFPs thrive in creative and people-focused paths."},
+      ENTP:{tagline:"The Debater", traits:"Inventive, quick, persuasive", stream:"Commerce", courses:"BBA, Law, Entrepreneurship", careers:"Lawyer, Start-up Founder, Consultant", alternatives:"Science", insights:"ENTPs shine in strategy, persuasion, and idea-driven spaces."},
+      ESTJ:{tagline:"The Organizer", traits:"Efficient, structured, results-driven", stream:"Commerce / Science", courses:"B.Com, BBA, MBA, CA", careers:"Manager, Banker, Army Officer", alternatives:"Science", insights:"ESTJs excel in leadership and operations-heavy roles."},
+      ESFJ:{tagline:"The Caregiver", traits:"Warm, organized, people-focused", stream:"Commerce", courses:"BBA, B.Com, Hotel Management", careers:"HR Manager, Teacher, Hospitality Manager", alternatives:"Humanities", insights:"ESFJs like structured, people-oriented fields."},
+      ENFJ:{tagline:"The Mentor", traits:"Charismatic, inspiring, values-driven", stream:"Humanities / Commerce", courses:"BA Psychology, MBA HR, Social Work", careers:"Teacher, HR Head, NGO Leader", alternatives:"Science", insights:"ENFJs lead by inspiring and motivating — suited for people leadership."},
+      ENTJ:{tagline:"The Leader", traits:"Bold, strategic, efficient", stream:"Science / Commerce", courses:"B.Tech + MBA, Law, CA", careers:"Business Leader, Lawyer, Army Officer", alternatives:"Humanities", insights:"ENTJs thrive in competitive, high-responsibility roles."}
+    };
+
+    // Questions + mapping (unchanged)
+    const questions = [
+      "I feel more energized after spending time with classmates, even after a long school day.",
+      "I prefer participating in school events like debates, fests, or sports over studying alone in my room.",
+      "During free periods or lunch, I would rather sit with a big group than with one or two close friends.",
+      "Festivals or family gatherings excite me more than quiet personal time at home.",
+      "While preparing for exams, I rely more on memorizing facts and examples than on imagining new ways to solve problems.",
+      "I prefer clear step-by-step instructions from teachers rather than exploring open-ended projects.",
+      "I often think about how today’s subjects connect to bigger ideas or future careers.",
+      "I learn best when lessons include real-life Indian examples (like cricket, news, or festivals) rather than abstract theories.",
+      "I enjoy imagining what new opportunities or careers might exist in the future.",
+      "When friends ask for advice, I usually suggest logical solutions rather than comforting them emotionally.",
+      "I believe being fair is more important than keeping everyone happy.",
+      "In group projects, I focus more on efficiency than on avoiding conflicts.",
+      "My parents’ opinions strongly influence the career path I consider for myself.",
+      "I often make choices by considering how others around me will feel, not just what is logical.",
+      "I prefer having a proper timetable for exams instead of studying whenever I feel like it.",
+      "I feel stressed if assignments are left to the last minute.",
+      "I enjoy it when plans change suddenly, as it makes things interesting.",
+      "I usually prepare detailed notes rather than experimenting with new ways of learning.",
+      "I like to decide on my stream or career early rather than keeping options open.",
+      "I often delay decisions because I want to keep exploring different possibilities."
+    ];
+
+    const traits = [
+      "E","E","E","E",
+      "S","S","N","S","N",
+      "T","T","T","F","F",
+      "J","J","P","J","J","P"
+    ];
+
+    // Opposite mapping
+    const opposite = { E:"I", I:"E", S:"N", N:"S", T:"F", F:"T", J:"P", P:"J" };
+
+    let currentQ = 0;
+    let answers = Array(questions.length).fill(null);
+
+    // Load question UI
+    function loadQuestion(index) {
+      questionText.textContent = questions[index];
+      optionsDiv.innerHTML = "";
+      scaleLabels.forEach((labelText, i) => {
+        const label = document.createElement("label");
+        label.className = "option-btn";
+        label.innerHTML = `
+          <input type="radio" name="q${index}" value="${i+1}" ${answers[index] == i+1 ? "checked" : ""}>
+          <span>${labelText}</span>
+        `;
+        label.querySelector("input").addEventListener("change", e => { answers[index] = parseInt(e.target.value); });
+        optionsDiv.appendChild(label);
+      });
+      progressBar.style.width = ((index + 1) / questions.length) * 100 + "%";
+      prevBtn.disabled = index === 0;
+      nextBtn.textContent = index === questions.length - 1 ? "Submit" : "Next";
+    }
+
+    // Corrected scoring: symmetric delta = value - 3
+    function calculateResult() {
+      // initialize
+      const scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+
+      answers.forEach((val, idx) => {
+        if (!val) return;
+        const trait = traits[idx];
+        const delta = val - 3; // 5->2,4->1,3->0,2->-1,1->-2
+        if (delta === 0) return; // neutral
+        if (delta > 0) {
+          scores[trait] += delta; // supports the stated trait
+        } else {
+          const opp = opposite[trait];
+          scores[opp] += Math.abs(delta); // supports opposite trait
+        }
+      });
+
+      // Determine letters
+      const EI = scores.E >= scores.I ? "E" : "I";
+      const SN = scores.S >= scores.N ? "S" : "N";
+      const TF = scores.T >= scores.F ? "T" : "F";
+      const JP = scores.J >= scores.P ? "J" : "P";
+      const finalType = EI + SN + TF + JP;
+      const data = mbtiData[finalType] || {};
+
+      // capture name from login form first input
+      try {
+        const nameInput = loginForm.querySelector('input[type="text"]');
+        studentName = nameInput ? nameInput.value.trim() || "Student" : "Student";
+      } catch {
+        studentName = "Student";
+      }
+
+      // Build result card (matches your provided design blocks)
+      resultPage.innerHTML = `
+        <div id="reportCard" class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6 border-t-8 border-purple-600">
+          <div class="mb-4 text-left">
+            <p class="text-sm text-gray-600">Student</p>
+            <h3 class="text-lg font-semibold text-gray-800">${studentName}</h3>
+          </div>
+
+          <div class="w-full rounded-lg bg-purple-200 py-6 mb-6">
+            <h1 class="text-center text-5xl font-bold text-white">${finalType}</h1>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="p-4 border rounded-lg text-left">
+              <h4 class="font-bold text-sm mb-2">TAGLINE</h4>
+              <p class="text-md font-semibold">${data.tagline || ""}</p>
+              <p class="text-sm text-gray-600 mt-2">${data.traits?.split(',')[0] || ""}</p>
+            </div>
+            <div class="p-4 border rounded-lg text-left">
+              <h4 class="font-bold text-sm mb-2">TRAITS</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700">
+                ${(data.traits || "").split(',').slice(0,5).map(t => `<li>${t.trim()}</li>`).join('')}
+              </ul>
+            </div>
+            <div class="p-4 border rounded-lg text-left">
+              <h4 class="font-bold text-sm mb-2">STREAM AFTER 12TH</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700">
+                ${(data.courses || "").split(',').slice(0,6).map(c => `<li>${c.trim()}</li>`).join('')}
+              </ul>
+            </div>
+          </div>
+
+          <div class="mb-6 px-4 py-3 border-l-4 border-yellow-400 bg-yellow-50 rounded">
+            <h4 class="font-bold text-sm">STREAM AFTER 10th</h4>
+            <p class="text-2xl font-bold text-purple-700">${data.stream || "Science"}</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="p-4 border rounded-lg text-left">
+              <h4 class="font-bold mb-2">INSIGHTS</h4>
+              <p class="text-sm text-gray-700">${data.insights || ""}</p>
+            </div>
+
+            <div class="p-4 border rounded-lg text-left">
+              <h4 class="font-bold mb-2">CAREER OPTIONS</h4>
+              <ul class="list-disc pl-5 text-sm text-gray-700">
+                ${(data.careers || "").split(',').map(c => `<li>${c.trim()}</li>`).join('')}
+              </ul>
+            </div>
+          </div>
+
+          <div class="mt-6 flex justify-center gap-4">
+            <button id="downloadBtn" class="px-6 py-2 bg-green-500 text-white rounded-lg">Download as PDF</button>
+            <button id="retakeBtn" class="px-6 py-2 bg-yellow-500 text-white rounded-lg">Retake Test</button>
+          </div>
+        </div>
+      `;
+
+      // PDF generation (uses the reportCard element)
+      document.getElementById("downloadBtn").addEventListener("click", () => {
+        const filename = `${studentName.replace(/\s+/g,'_')}_${finalType}_MBTI_Report.pdf`;
+        const element = document.getElementById("reportCard");
+        html2pdf().set({ filename }).from(element).save();
+      });
+
+      // Retake behavior
+      document.getElementById("retakeBtn").addEventListener("click", () => {
+        resultPage.style.display = "none";
+        questionnairePage.style.display = "block";
+        currentQ = 0;
+        answers = Array(questions.length).fill(null);
+        loadQuestion(0);
+      });
+    }
+
+    // Navigation
+    nextBtn.addEventListener("click", () => {
+      const selected = document.querySelector(`input[name="q${currentQ}"]:checked`);
+      if (!selected) { alert("Please select an option."); return; }
+      answers[currentQ] = parseInt(selected.value);
+      if (currentQ < questions.length - 1) {
+        currentQ++;
+        loadQuestion(currentQ);
+      } else {
+        questionnairePage.style.display = "none";
+        resultPage.style.display = "block";
+        calculateResult();
+      }
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (currentQ > 0) {
+        currentQ--;
+        loadQuestion(currentQ);
+      }
+    });
+
+    // On login: capture student name and show home
+    loginForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const nameInput = loginForm.querySelector('input[type="text"]');
+      studentName = nameInput ? nameInput.value.trim() : "Student";
+      loginPage.style.display = "none";
+      homePage.style.display = "block";
+    });
+
+    // Start test
+    startBtn.addEventListener("click", () => {
+      homePage.style.display = "none";
+      questionnairePage.style.display = "block";
+      currentQ = 0;
+      loadQuestion(0);
+    });
+
+  </script>
+</body>
+</html>
